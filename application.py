@@ -690,17 +690,20 @@ BODY = dbc.Container(
 )
 
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server  # for Heroku deployment
+dash_app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash_app.server  # for Heroku deployment
 
-app.layout = html.Div(children=[NAVBAR, BODY])
+#dash_app = dash.Dash()
+#app = dash_app.server
+
+dash_app.layout = html.Div(children=[NAVBAR, BODY])
 
 """
 #  Callbacks
 """
 
 
-@app.callback(
+@dash_app.callback(
         Output("bigrams-scatter", "figure")
     ,
     [Input("time-window-slider", "value")],
@@ -726,7 +729,7 @@ def populate_bigram_scatter(value):
     return fig
 
 
-@app.callback(
+@dash_app.callback(
     Output("bigrams-comps", "figure"),
     [Input("bigrams-comp_1", "value"), Input("bigrams-comp_2", "value")],
 )
@@ -754,7 +757,7 @@ def comp_bigram_comparisons(comp_first, comp_second):
     return fig
 
 
-@app.callback(
+@dash_app.callback(
     [
         Output("time-window-slider", "marks"),
         Output("time-window-slider", "min"),
@@ -787,7 +790,7 @@ def populate_time_slider(value):
     )
 
 
-@app.callback(
+@dash_app.callback(
     Output("bank-drop", "options"),
     [Input("time-window-slider", "value"), Input("n-selection-slider", "value")],
 )
@@ -802,7 +805,7 @@ def populate_bank_dropdown(time_values, n_value):
     return make_options_bank_drop(bank_names)
 
 
-@app.callback(
+@dash_app.callback(
     [Output("bank-sample", "figure"), Output("no-data-alert-bank", "style")],
     [Input("n-selection-slider", "value"), Input("time-window-slider", "value")],
 )
@@ -840,7 +843,7 @@ def update_bank_sample_plot(n_value, time_values):
 
 
 
-@app.callback(
+@dash_app.callback(
     [
         Output("bank-wordcloud", "figure"),
         Output("frequency_figure", "figure"),
@@ -867,7 +870,7 @@ def update_wordcloud_plot(value_drop, time_values, n_selection):
 
 
 
-@app.callback(Output("bank-drop", "value"), [Input("bank-sample", "clickData")])
+@dash_app.callback(Output("bank-drop", "value"), [Input("bank-sample", "clickData")])
 def update_bank_drop_on_click(value):
     """ TODO """
     if value is not None:
@@ -877,4 +880,4 @@ def update_bank_drop_on_click(value):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    dash_app.run_server(debug=True)
